@@ -1,0 +1,27 @@
+{
+    "name": "maqueen-gestos",
+    "version": "1.0.0",
+    "description": "Carrinho micro:Maqueen controlado por gestos via Bluetooth",
+    "dependencies": {
+        "core": "*",
+        "bluetooth": "*"
+    },
+    "files": [
+        "main.ts"
+    ],
+    "preferredEditor": "tsprj",
+    "yotta": {
+        "config": {
+            "microbit-dal": {
+                "bluetooth": {
+                    "open": 1,
+                    "whitelist": 0,
+                    "security_level": null,
+                    "event_service": 0,
+                    "eddystone_url": 0,
+                    "eddystone_uid": 0
+                }
+            }
+        }
+    }
+}

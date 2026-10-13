@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0f14">
+  <title>Maqueen Gestos</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="stage" id="stage">
+    <video id="video" playsinline muted autoplay></video>
+    <canvas id="overlay"></canvas>
+
+    <header class="topbar">
+      <div class="brand">Maqueen <span>Gestos</span></div>
+      <div class="top-actions">
+        <span id="distance" class="pill" hidden></span>
+        <button id="btButton" class="pill bt" type="button">
+          <span class="dot"></span><span id="btLabel">Ligar carrinho</span>
+        </button>
+        <button id="settingsButton" class="icon-button" type="button" aria-label="Definições">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <aside class="hand-card steer" id="steerCard">
+      <div class="card-label">Volante</div>
+      <svg class="wheel" id="wheel" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="40"/>
+        <circle cx="50" cy="50" r="9"/>
+        <path d="M10 50h31M59 50h31M50 59v31"/>
+      </svg>
+      <div class="card-value" id="steerText">sem volante</div>
+    </aside>
+
+    <aside class="hand-card throttle" id="throttleCard">
+      <div class="card-label">Andar</div>
+      <div class="gesture-arrow" id="gestureArrow">•</div>
+      <div class="card-value" id="gestureText">mostra as duas mãos</div>
+    </aside>
+
+    <footer class="bottombar">
+      <div class="motors" aria-label="Velocidade das rodas">
+        <div class="motor"><div class="bar"><span id="barLeft"></span></div><small>E</small></div>
+        <div class="motor"><div class="bar"><span id="barRight"></span></div><small>D</small></div>
+      </div>
+      <button id="stopButton" class="stop" type="button">PARAR</button>
+    </footer>
+
+    <section class="intro" id="intro">
+      <div class="intro-card">
+        <h1>Conduz o carrinho com as mãos</h1>
+        <p class="lead">Põe o telemóvel de pé, com a câmara virada para ti, e segura um volante imaginário com as duas mãos.</p>
+        <div class="howto">
+          <div class="step turn">
+            <div class="step-icon">⟳</div>
+            <h2>Rodar → virar</h2>
+            <p>Roda o volante como num carro: a mão esquerda sobe e a direita desce para virar à direita.</p>
+          </div>
+          <div class="step fwd">
+            <div class="step-icon">▲</div>
+            <h2>Mãos abertas → andar</h2>
+            <p>Com as duas mãos abertas o carro anda para a frente.</p>
+          </div>
+          <div class="step halt">
+            <div class="step-icon">■</div>
+            <h2>Mãos fechadas → travar</h2>
+            <p>Fecha as mãos para parar. Basta fechar uma.</p>
+          </div>
+          <div class="step back">
+            <div class="step-icon">▼</div>
+            <h2>Volante em baixo → trás</h2>
+            <p>Com as mãos abertas, baixa o volante abaixo da linha laranja tracejada.</p>
+          </div>
+        </div>
+        <p class="note">Ao levantar as mãos, segura o volante quieto meio segundo: essa é a altura normal. Sempre que travas, a altura onde estás passa a ser a normal.</p>
+        <p class="warning" id="warning" hidden></p>
+        <div class="intro-actions">
+          <button id="startButton" class="primary" type="button">Iniciar câmara</button>
+          <button id="introBtButton" class="secondary" type="button">Ligar carrinho</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="toast" id="toast" role="status" hidden></div>
+
+    <dialog id="settings">
+      <form method="dialog" class="settings-form">
+        <h2>Definições</h2>
+        <label>Velocidade máxima <output data-for="maxSpeed"></output>
+          <input type="range" name="maxSpeed" min="60" max="255" step="5">
+        </label>
+        <label>Velocidade em marcha-atrás <output data-for="reverseSpeed"></output>
+          <input type="range" name="reverseSpeed" min="0.3" max="1" step="0.05">
+        </label>
+        <label>Força da curva <output data-for="turnStrength"></output>
+          <input type="range" name="turnStrength" min="0.15" max="1" step="0.05">
+          <small>Mais baixo = vira mais devagar</small>
+        </label>
+        <label>Zona morta do volante <output data-for="wheelDeadzone"></output>
+          <input type="range" name="wheelDeadzone" min="2" max="15" step="1">
+        </label>
+        <label>Rotação para virar ao máximo <output data-for="wheelMax"></output>
+          <input type="range" name="wheelMax" min="20" max="70" step="1">
+        </label>
+        <label>Quanto baixar para a marcha-atrás <output data-for="reverseDrop"></output>
+          <input type="range" name="reverseDrop" min="0.08" max="0.3" step="0.01">
+          <small>Em percentagem da altura da imagem</small>
+        </label>
+        <label class="toggle"><input type="checkbox" name="backCamera"> Usar a câmara traseira</label>
+        <label class="toggle"><input type="checkbox" name="showSkeleton"> Mostrar o esqueleto das mãos</label>
+        <p class="hint">No computador podes testar os motores com as setas do teclado.</p>
+        <div class="settings-actions">
+          <button type="button" id="resetSettings">Repor</button>
+          <button value="close" class="primary">Fechar</button>
+        </div>
+      </form>
+    </dialog>
+  </main>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

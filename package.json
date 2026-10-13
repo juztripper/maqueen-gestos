@@ -1,0 +1,11 @@
+{
+  "name": "maqueen-gestos",
+  "version": "1.0.0",
+  "description": "Controlar um micro:Maqueen com gestos das mãos, pela câmara do telemóvel",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "python3 -m http.server 8000 --directory app",
+    "test": "node --test test/*.test.mjs"
+  }
+}
